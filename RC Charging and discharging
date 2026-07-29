@@ -1,0 +1,235 @@
+
+import math 
+
+# first we must find out whether the capacitor is charging or discharging
+
+state = input("Is the capacitor charging or discharging? ").lower()
+q_v_or_i = input("Do you want to calculate charge, voltage or current? ").lower()
+
+charge = float(input("What is the maximum charge in coulombs? (if unknown enter -1)"))
+voltage = float(input("What is the maximum voltage in volts? (if unknown enter -1)"))
+time_con = float(input("What is the time constant in seconds? (if unknown enter -1)"))
+
+if state == "charging" and q_v_or_i == "voltage":
+    ask = input("Do you want to calculate the time constant, time taken, capacitance, resistance, supply voltage, current voltage? ").lower()
+    t_voltage = float(input("What is the voltage at time t in volts? (if unknown enter -1) "))
+    resistance = float(input("What is the resistance in ohms? (if unknown enter -1)"))
+    capacitance = float(input("What is the capacitance in farads? (if unknown enter -1)"))
+    time = float(input("What is the time taken in seconds? (if unknown enter -1)"))
+    if ask == "time constant" and resistance != -1 and capacitance != -1:
+        time_constant = resistance * capacitance
+        print(f"The time constant is {time_constant} seconds")
+    elif ask == "time constant" and (resistance == -1 or capacitance == -1):
+        time_constant = -(time / math.log(1 - (t_voltage / voltage)))
+        print(f"The time constant is {time_constant} seconds")
+    elif ask == "time taken" and resistance != -1 and capacitance != -1:
+        time_constant = resistance * capacitance
+        time = -time_constant * math.log(1 - (t_voltage / voltage))
+        print(f"The time taken is {time} seconds")
+    elif ask == "capacitance" and charge != -1 and voltage != -1:
+        capacitance = charge / voltage
+        print(f"The capacitance is {capacitance} farads")
+    elif ask == "capacitance" and (charge == -1 or voltage == -1):
+        time_constant = -(time / math.log(1 - (t_voltage / voltage)))
+        capacitance = time_constant / resistance
+        print(f"The capacitance is {capacitance} farads")
+    elif ask == "resistance" and time_con != -1 and capacitance != -1:
+        resistance = time_con / capacitance
+        print(f"The resistance is {resistance} ohms")
+    elif ask == "resistance" and (time_con == -1 or capacitance == -1):
+        time_constant = -(time / math.log(1 - (t_voltage / voltage)))
+        resistance = time_constant / capacitance
+        print(f"The resistance is {resistance} ohms")
+    elif ask == "supply voltage" and charge != -1 and capacitance != -1:
+        voltage = charge / capacitance
+        print(f"The supply voltage is {voltage} volts")
+    elif ask == "supply voltage" and (charge == -1 or capacitance == -1):
+        time_constant = -(time / math.log(1 - (t_voltage / voltage)))
+        voltage = t_voltage / (1 - math.exp(-time / time_constant))
+        print(f"The supply voltage is {voltage} volts")
+    elif ask == "current voltage" and time_con != -1 and voltage != -1:
+        time_constant = time_con
+        t_voltage = voltage * (1 - math.exp(-time / time_constant))
+        print(f"The voltage at time t is {t_voltage} volts")
+    else:
+        print("Invalid input")
+elif state == "charging" and q_v_or_i == "charge":
+    ask = input("Do you want to calculate the time constant, time taken, capacitance, resistance, supply charge, current charge? ").lower()
+    t_charge = float(input("What is the charge at time t in coulombs? (if unknown enter -1) "))
+    resistance = float(input("What is the resistance in ohms? (if unknown enter -1)"))
+    capacitance = float(input("What is the capacitance in farads? (if unknown enter -1)"))
+    time = float(input("What is the time taken in seconds? (if unknown enter -1)"))
+    if ask == "time constant" and resistance != -1 and capacitance != -1:
+        time_constant = resistance * capacitance
+        print(f"The time constant is {time_constant} seconds")
+    elif ask == "time constant" and (resistance == -1 or capacitance == -1):
+        time_constant = -(time / math.log(1 - (t_charge / charge)))
+        print(f"The time constant is {time_constant} seconds")
+    elif ask == "time taken" and resistance != -1 and capacitance != -1:
+        time_constant = resistance * capacitance
+        time = -time_constant * math.log(1 - (t_charge / charge))
+        print(f"The time taken is {time} seconds")
+    elif ask == "capacitance" and charge != -1 and voltage != -1:
+        capacitance = charge / voltage
+        print(f"The capacitance is {capacitance} farads")
+    elif ask == "capacitance" and (charge == -1 or voltage == -1):
+        time_constant = -(time / math.log(1 - (t_charge / charge)))
+        capacitance = time_constant / resistance
+        print(f"The capacitance is {capacitance} farads")
+    elif ask == "resistance" and time_con != -1 and capacitance != -1:
+        resistance = time_con / capacitance
+        print(f"The resistance is {resistance} ohms")
+    elif ask == "resistance" and (time_con == -1 or capacitance == -1):
+        time_constant = -(time / math.log(1 - (t_charge / charge)))
+        resistance = time_constant / capacitance
+        print(f"The resistance is {resistance} ohms")
+    elif ask == "supply charge" and charge != -1 and capacitance != -1:
+        charge = capacitance * voltage
+        print(f"The supply charge is {charge} coulombs")
+    elif ask == "supply charge" and (charge == -1 or capacitance == -1):
+        time_constant = -(time / math.log(1 - (t_charge / charge)))
+        charge = t_charge / (1 - math.exp(-time / time_constant))
+        print(f"The supply charge is {charge} coulombs")
+    elif ask == "current charge" and time_con != -1 and charge != -1:
+        time_constant = time_con
+        t_charge = charge * (1 - math.exp(-time / time_constant))
+        print(f"The charge at time t is {t_charge} coulombs")
+    else:
+        print("Invalid input")
+elif state == "charging" or state == "discharging" and q_v_or_i == "current":
+    ask = input("Do you want to calculate the time constant, time taken, capacitance, resistance, supply current, current now? ").lower()
+    current = float(input("What is the maximum current in amps? (if unknown enter -1)"))
+    t_current = float(input("What is the voltage at time t in amps? (if unknown enter -1) "))
+    resistance = float(input("What is the resistance in ohms? (if unknown enter -1)"))
+    capacitance = float(input("What is the capacitance in farads? (if unknown enter -1)"))
+    time = float(input("What is the time taken in seconds? (if unknown enter -1)"))
+    if ask == "time constant" and resistance != -1 and capacitance != -1:
+        time_constant = resistance * capacitance
+        print(f"The time constant is {time_constant} seconds")
+    elif ask == "time constant" and (resistance == -1 or capacitance == -1):
+        time_constant = -time*(math.log(t_current/current))
+        print(f"The time constant is {time_constant} seconds")
+    elif ask == "time taken" and resistance != -1 and capacitance != -1:
+        time_constant = resistance * capacitance
+        time = -time_constant * math.log((t_current / current))
+        print(f"The time taken is {time} seconds")
+    elif ask == "capacitance" and charge != -1 and voltage != -1:
+        capacitance = charge / voltage
+        print(f"The capacitance is {capacitance} farads")
+    elif ask == "capacitance" and (charge == -1 or voltage == -1):
+        time_constant = -time*(math.log(t_current/current))
+        capacitance = time_constant / resistance
+        print(f"The capacitance is {capacitance} farads")
+    elif ask == "resistance" and time_con != -1 and capacitance != -1:
+        resistance = time_con / capacitance
+        print(f"The resistance is {resistance} ohms")
+    elif ask == "resistance" and (time_con == -1 or capacitance == -1):
+        time_constant = -time*(math.log(t_current/current))
+        resistance = time_constant / capacitance
+        print(f"The resistance is {resistance} ohms")
+    elif ask == "supply current" and current != -1 and capacitance != -1:
+        current = voltage / resistance
+        print(f"The supply current is {current} amps")
+    elif ask == "supply current" and (current == -1 or capacitance == -1):
+        current = t_current / math.exp(-time / time_con)
+        print(f"The supply current is {current} amps")
+    elif ask == "current now" and time_con != -1 and current != -1:
+        time_constant = time_con
+        t_current = current * math.exp(-time / time_constant)
+        print(f"The current at time t is {t_current} amps")
+    else:
+        print("Invalid input")
+elif state == "discharging" and q_v_or_i == "voltage":
+    ask = input("Do you want to calculate the time constant, time taken, capacitance, resistance, supply voltage, current voltage? ").lower()
+    t_voltage = float(input("What is the voltage at time t in volts? (if unknown enter -1) "))
+    resistance = float(input("What is the resistance in ohms? (if unknown enter -1)"))
+    capacitance = float(input("What is the capacitance in farads? (if unknown enter -1)"))
+    time = float(input("What is the time taken in seconds? (if unknown enter -1)"))
+    if ask == "time constant" and resistance != -1 and capacitance != -1:
+        time_constant = resistance * capacitance
+        print(f"The time constant is {time_constant} seconds")
+    elif ask == "time constant" and (resistance == -1 or capacitance == -1):
+        time_constant = -time*(math.log(t_voltage/voltage))
+        print(f"The time constant is {time_constant} seconds")
+    elif ask == "time taken" and resistance != -1 and capacitance != -1:
+        time_constant = resistance * capacitance
+        time = -time_constant * math.log((t_voltage / voltage))
+        print(f"The time taken is {time} seconds")
+    elif ask == "capacitance" and charge != -1 and voltage != -1:
+        capacitance = charge / voltage
+        print(f"The capacitance is {capacitance} farads")
+    elif ask == "capacitance" and (charge == -1 or voltage == -1):
+        time_constant = -time*(math.log(t_voltage/voltage))
+        capacitance = time_constant / resistance
+        print(f"The capacitance is {capacitance} farads")
+    elif ask == "resistance" and time_con != -1 and capacitance != -1:
+        resistance = time_con / capacitance
+        print(f"The resistance is {resistance} ohms")
+    elif ask == "resistance" and (time_con == -1 or capacitance == -1):
+        time_constant = -time*(math.log(t_voltage/voltage))
+        resistance = time_constant / capacitance
+        print(f"The resistance is {resistance} ohms")
+    elif ask == "supply voltage" and charge != -1 and capacitance != -1:
+        voltage = charge / capacitance
+        print(f"The supply voltage is {voltage} volts")
+    elif ask == "supply voltage" and (t_voltage == -1 or capacitance == -1):
+        voltage = t_voltage / math.exp(-time / time_con)
+        print(f"The supply voltage is {voltage} volts")
+    elif ask == "current voltage" and time_con != -1 and voltage != -1:
+        time_constant = time_con
+        t_voltage = voltage * math.exp(-time / time_constant)
+        print(f"The current at time t is {t_voltage} volts")
+    else:
+        print("Invalid input")
+
+elif state == "discharging" and q_v_or_i == "charge":    
+    ask = input("Do you want to calculate the time constant, time taken, capacitance, resistance, supply charge, current charge? ").lower()
+    t_charge = float(input("What is the charge at time t in coulombs? (if unknown enter -1) "))
+    resistance = float(input("What is the resistance in ohms? (if unknown enter -1)"))
+    capacitance = float(input("What is the capacitance in farads? (if unknown enter -1)"))
+    time = float(input("What is the time taken in seconds? (if unknown enter -1)"))
+    if ask == "time constant" and resistance != -1 and capacitance != -1:
+        time_constant = resistance * capacitance
+        print(f"The time constant is {time_constant} seconds")
+    elif ask == "time constant" and (resistance == -1 or capacitance == -1):
+        time_constant = -time*(math.log(t_charge/charge))
+        print(f"The time constant is {time_constant} seconds")
+    elif ask == "time taken" and resistance != -1 and capacitance != -1:
+        time_constant = resistance * capacitance
+        time = -time_constant * math.log((t_charge / charge))
+        print(f"The time taken is {time} seconds")
+    elif ask == "capacitance" and charge != -1 and voltage != -1:
+        capacitance = charge / voltage
+        print(f"The capacitance is {capacitance} farads")
+    elif ask == "capacitance" and (charge == -1 or voltage == -1):
+        time_constant = -time*(math.log(t_charge/charge))
+        capacitance = time_constant / resistance
+        print(f"The capacitance is {capacitance} farads")
+    elif ask == "resistance" and time_con != -1 and capacitance != -1:
+        resistance = time_con / capacitance
+        print(f"The resistance is {resistance} ohms")
+    elif ask == "resistance" and (time_con == -1 or capacitance == -1):
+        time_constant = -time*(math.log(t_charge/charge))
+        resistance = time_constant / capacitance
+        print(f"The resistance is {resistance} ohms")
+    elif ask == "supply charge" and charge != -1 and capacitance != -1:
+        charge = capacitance * voltage
+        print(f"The supply charge is {charge} coulombs")
+    elif ask == "supply charge" and (t_charge == -1 or capacitance == -1):
+        charge = t_charge / math.exp(-time / time_con)
+        print(f"The supply charge is {charge} coulombs")
+    elif ask == "current charge" and time_con != -1 and voltage != -1:
+        time_constant = time_con
+        t_charge = charge * math.exp(-time / time_constant)
+        print(f"The current at time t is {t_charge} coulombs")
+    else:
+        print("Invalid input")
+
+
+
+
+
+
+
+    
+    

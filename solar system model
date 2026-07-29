@@ -1,0 +1,123 @@
+import math
+import numpy as np
+
+
+def gravity_calculator(mass1, mass2, distance):
+    G = 6.67430e-11  # gravitational constant in m^3 kg^-1 s^-2
+    force = (G * (mass1 * mass2)) / distance**2
+    return force
+
+
+print("This calculator calculates the gravitational force between multiple masses using Newton's law of universal gravitation.")
+
+number_of_bodies = int(input("How many bodies are in the system? (2-10): "))
+masses = []
+velocities = []
+for i in range(number_of_bodies):
+    mass = float(input(f"What is the mass of body {i+1} in kg? "))
+    masses.append(mass)
+positions = []
+for i in range(number_of_bodies):
+    x = float(input(f"What is the x-coordinate of body {i+1} in meters? "))
+    y = float(input(f"What is the y-coordinate of body {i+1} in meters? "))
+    z = float(input(f"What is the z-coordinate of body {i+1} in meters? "))
+    positions.append((x, y, z))
+# we are storing the positions so we can work out the vector of the gravitational force later
+
+
+def distance(pos1, pos2):
+    # this will calculate the distance between two points in 3D space, essential for finding both the unit vector and the gravutational force
+    return math.sqrt((pos1[0] - pos2[0])**2 + (pos1[1] - pos2[1])**2 + (pos1[2] - pos2[2])**2)
+# i will implement a function to calculate the distance between two points in 3D space, this will make it much easier to code and will use far less code
+
+
+def unit_vector(pos1, pos2):
+    net_distance = distance(pos1, pos2)
+    return ((pos1[0] - pos2[0]) / net_distance, (pos1[1] - pos2[1]) / net_distance, (pos1[2] - pos2[2]) / net_distance)
+
+
+# the unit vector finds the direction that each force acts so you can add them vectorally later
+for i in range(number_of_bodies):
+    total_force = [0.0, 0.0, 0.0]  # Initialize force vector for body i
+    for j in range(number_of_bodies):
+        if i != j:
+            distance_ij = distance(positions[i], positions[j])
+            force_magnitude = gravity_calculator(
+                masses[i], masses[j], distance_ij)
+            # we must now find the direction of the force which can be done by splitting the force into its components
+            direction = unit_vector(positions[j], positions[i])
+            force_vector = (
+                force_magnitude * direction[0], force_magnitude * direction[1], force_magnitude * direction[2])
+            # here we are finding the net force in the i unit vector direction
+            total_force[0] += force_vector[0]
+            # here we are finding the net force in the j unit vector direction
+            total_force[1] += force_vector[1]
+            # here we are finding the net force in the k unit vector direction
+            total_force[2] += force_vector[2]
+            print(
+                f"The gravitational force exerted on body {i+1} by body {j+1} is {force_vector} Newtons")
+    print(
+        f"The total gravitational force on body {i+1} is {total_force} Newtons")
+# we have now calculated the gravitational force between multiple bodies in a system by using Newton's law of universal gravitation and vector addition to find the net force on each body
+
+for i in range(number_of_bodies):
+    v_x = float(
+        input(f"What is the x-component of the velocity of body {i+1} in m/s? "))
+    v_y = float(
+        input(f"What is the y-component of the velocity of body {i+1} in m/s? "))
+    v_z = float(
+        input(f"What is the z-component of the velocity of body {i+1} in m/s? "))
+    velocities.append((v_x, v_y, v_z))
+# we are storing the velocities so we can update the positions of the bodies later
+
+
+def acceleration(force, mass):
+    return (total_force[0] / mass, total_force[1] / mass, total_force[2] / mass)
+
+
+for i in range(number_of_bodies):
+    accelerations_lists = []  # Initialize a list to store accelerations
+    acc = acceleration(total_force, masses[i])
+    accelerations_lists.append(acc)
+    print(f"The acceleration of body {i+1} is {acc} m/s^2")
+# we have now calculated the acceleration of each body in the system using Newton's second law of motion F = ma or a = F/m
+
+
+positions = np.array(positions)  # Convert to NumPy array
+velocities = np.array((number_of_bodies, 3)) # Convert to NumPy array
+
+
+def update(positions, velocities, masses, dt):
+    new_positions = []
+    new_velocities = []
+
+    for i in range(len(masses)):
+        total_force = [0.0, 0.0, 0.0]
+        for j in range(len(masses)):
+            if i != j:
+                r = distance(positions[i], positions[j])
+                f = gravity_calculator(masses[i], masses[j], r)
+                direction = unit_vector(positions[i], positions[j])
+                force_vector = [f * d for d in direction]
+                total_force[0] += force_vector[0]
+                total_force[1] += force_vector[1]
+                total_force[2] += force_vector[2]
+
+        # Acceleration = F / m
+        ax = total_force[0] / masses[i]
+        ay = total_force[1] / masses[i]
+        az = total_force[2] / masses[i]
+
+        # Update velocity
+        vx = velocities[i][0] + ax * dt
+        vy = velocities[i][1] + ay * dt
+        vz = velocities[i][2] + az * dt
+        new_velocities.append([vx, vy, vz])
+
+        # Update position
+        x = positions[i][0] + vx * dt
+        y = positions[i][1] + vy * dt
+        z = positions[i][2] + vz * dt
+        new_positions.append([x, y, z])
+
+    return new_positions, new_velocities

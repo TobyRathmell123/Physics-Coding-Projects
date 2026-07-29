@@ -1,0 +1,57 @@
+import math 
+
+print("This calculator aids calculations of Einsteins theory of special relativity")
+print("It can calculate time dilation, length contraction and relativistic mass increase")
+c = 299792458  # speed of light in m/s
+input_type = input("Do you want to calculate time dilation, length contraction or relativistic mass increase? (time/length/mass): ").lower()
+
+pathway = input("Do you know the velocity or the gamma factor? (v/gamma): ").lower()
+
+def calculate_gamma(velocity):
+    return 1 / math.sqrt(1 - (velocity**2 / c**2))
+
+def calculate_velocity(gamma):
+    return c * math.sqrt(1 - 1 / gamma**2)
+
+if input_type == "time" and pathway == "v":
+    velocity = float(input("What is the velocity of the moving object in m/s? "))
+    proper_time = float(input("What is the proper time interval in seconds? "))
+    gamma = calculate_gamma(velocity)
+    dilated_time = proper_time * gamma
+    print(f"The dilated time interval is {dilated_time} seconds")
+#here we have calculated the time dilation by calculating the relativistic factor gamma from the velocity and then multiplying it by the proper time interval since we know that t = yT
+elif input_type == "time" and pathway == "gamma":
+    gamma = float(input("What is the gamma factor? "))
+    proper_time = float(input("What is the proper time interval in seconds? "))
+    dilated_time = proper_time * gamma
+    print(f"The dilated time interval is {dilated_time} seconds")
+#here we have calculated the time dilation by multiplying the proper time interval by the gamma factor since we know that t = yT 
+
+elif input_type == "length" and pathway == "v":
+    velocity = float(input("What is the velocity of the moving object relative to the observer in m/s? "))
+    proper_length = float(input("What is the proper length in meters? "))
+    gamma = calculate_gamma(velocity)
+    contracted_length = proper_length / gamma 
+    print(f"The contracted length is {contracted_length} meters")
+#here we have calculated the length contraction by calculating the relativistic factor gamma from the velocity and then dividing the proper length by gamma since we know that L = L0/y
+elif input_type == "length" and pathway == "gamma":
+    gamma = float(input("What is the gamma factor? "))
+    proper_length = float(input("What is the proper length in meters? "))
+    contracted_length = proper_length / gamma
+    print(f"The contracted length is {contracted_length} meters")
+#here we have calculated the length contraction by dividing the proper length by the gamma factor since we know that L = L0/y
+elif input_type == "mass" and pathway == "v":
+    velocity = float(input("What is the velocity of the moving object in m/s? "))
+    rest_mass = float(input("What is the rest mass of the object in kg? "))
+    gamma = calculate_gamma(velocity)
+    relativistic_mass = rest_mass * gamma
+    print(f"The relativistic mass is {relativistic_mass} kg")
+#here we have calculated the relativistic mass increase by calculating the relativistic factor gamma from the velocity and then multiplying it by the rest mass since we know that m = ym0
+elif input_type == "mass" and pathway == "gamma":
+    gamma = float(input("What is the gamma factor? "))
+    rest_mass = float(input("What is the rest mass of the object in kg? "))
+    relativistic_mass = rest_mass * gamma
+    print(f"The relativistic mass is {relativistic_mass} kg")
+#here we have calculated the relativistic mass increase by multiplying the rest mass by the gamma factor since we know that m = ym0
+else:
+    print("Invalid input")
